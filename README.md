@@ -1,41 +1,72 @@
-# 📒 README Công Việc Ngày 31/07/2025
 
-## 🚀 **Tóm tắt nhiệm vụ hôm nay**
-**Ngày thực hiện:** 31/07/2025
+---
 
-### 🏷️ **Task lớn**  
-**Xây dựng hệ thống xác thực & quản lý hồ sơ cho Ứng viên và Doanh nghiệp**
+# 📒 **BÁO CÁO CÔNG VIỆC – 31/07/2025**
 
-## ✅ **Các nhiệm vụ đã triển khai**
+> **🎯 Mục tiêu chính:**
+> Xây dựng hệ thống **xác thực** và **quản lý hồ sơ** cho Ứng viên & Doanh nghiệp
 
-- 🔑 **Đăng ký & Đăng nhập**
-  - Xây dựng form đăng ký, đăng nhập cho cả ứng viên và doanh nghiệp.
-  - Xác thực quyền, phân loại role, lưu mật khẩu chuẩn hash (bcrypt).
-  - Validate trùng username/email, đảm bảo bảo mật đầu vào.
+---
 
-- 📝 **Tạo & chỉnh sửa profile Doanh nghiệp**
-  - Thiết kế giao diện profile công ty (logo, tên, ngành, liên hệ...).
-  - Làm chức năng chỉnh sửa thông tin và cập nhật dữ liệu về database.
+## ✅ **1. Nhiệm vụ đã triển khai**
 
-- 🆕 **Dashboard & profile Ứng viên**
-  - Thiết kế UI/UX hiển thị thông tin cá nhân, học vấn, kỹ năng, dự án cho ứng viên.
-  - Triển khai chức năng chỉnh sửa hồ sơ cho applicant (đang phát triển).
-  - Hiển thị các công việc đã ứng tuyển, thông tin hồ sơ đồng bộ mượt mà.
+### 🔐 Đăng ký & Đăng nhập
 
-- 💻 **Kết nối môi trường phát triển**
-  - Thiết lập, kết nối local XAMPP/MySQL với VSCode để phát triển code và quản lý database.
+* Tạo form đăng ký / đăng nhập cho **ứng viên** và **doanh nghiệp**.
+* Phân loại **role**, lưu mật khẩu an toàn với `bcrypt`.
+* Kiểm tra trùng **username/email**, xử lý input bảo mật.
 
-## ⚠️ **Công việc đang tiếp tục**
-- Đang hoàn thiện chức năng đăng nhập cho ứng viên (applicant), fix luồng điều hướng sang dashboard ứng viên.
-- Phát triển tiếp tính năng đăng bài ở post (bảng posts).
+---
 
-## 🏁 **Kết quả hôm nay**
-- Đăng ký, đăng nhập cho hai vai trò đã vận hành đúng logic, doanh nghiệp sửa được thông tin đầy đủ.
-- Giao diện dashboard cho applicant và company đã build chuẩn hiện đại.
-- Xử lý tốt kiểm tra dữ liệu đầu vào, session, điều hướng, bảo mật.
-- Đã nhận diện/xử lý lỗi đăng nhập applicant, chuẩn bị fix triệt để để luồng ứng viên hoàn chỉnh.
+### 🏢 Hồ sơ Doanh nghiệp
 
-### 🙌 **Tổng kết**
-> Toàn bộ chức năng xác thực, quản lý hồ sơ, chỉnh sửa profile và giao diện đã hoàn thành ở mức vận hành được cho doanh nghiệp. Phần ứng viên sẽ tiếp tục hoàn thiện đăng nhập và các nghiệp vụ mới trong ngày tới!
+* Thiết kế giao diện profile gồm: logo, tên công ty, ngành nghề, thông tin liên hệ,...
+* Cho phép doanh nghiệp **chỉnh sửa thông tin** và cập nhật vào database.
 
-_📅 Generated: 31/07/2025_
+---
+
+### 👤 Hồ sơ Ứng viên
+
+* Tạo **dashboard** hiển thị thông tin cá nhân, học vấn, kỹ năng, dự án,...
+* Phát triển chức năng **chỉnh sửa hồ sơ** (đang thực hiện).
+* Hiển thị danh sách công việc đã ứng tuyển, thông tin được đồng bộ.
+
+---
+
+### 🛠️ Thiết lập môi trường phát triển
+
+* Kết nối thành công **XAMPP/MySQL** với **VSCode**.
+* Thiết lập môi trường local phục vụ lập trình, kiểm thử và quản lý cơ sở dữ liệu.
+
+---
+
+## ⚙️ **2. Công việc đang tiếp tục**
+
+* [ ] Hoàn thiện **đăng nhập cho ứng viên**, điều hướng đúng sau login.
+* [ ] Phát triển tính năng **đăng bài tuyển dụng** cho doanh nghiệp (`posts`).
+
+---
+
+## 🏁 **3. Kết quả đạt được**
+
+* ✔️ Hệ thống xác thực và phân quyền hoạt động chính xác.
+* ✔️ Hồ sơ doanh nghiệp đã chỉnh sửa và lưu ổn định.
+* ✔️ Giao diện dashboard hiện đại, phù hợp với cả 2 vai trò.
+* ✔️ Kiểm soát session, điều hướng và bảo mật đầu vào ổn.
+* ⚠️ Đã phát hiện lỗi ở luồng login của ứng viên, đang fix triệt để.
+
+---
+
+## 🙌 **4. Tổng kết**
+
+> Hệ thống xác thực, giao diện và quản lý hồ sơ cho **doanh nghiệp** đã hoàn thiện ở mức có thể vận hành.
+> Phần của **ứng viên** sẽ tiếp tục được hoàn chỉnh và phát triển thêm các nghiệp vụ trong ngày mai.
+
+---
+
+📆 *Generated: 31/07/2025*
+
+---
+
+Nếu bạn muốn, mình có thể tạo luôn bản `.md` hoặc `.pdf` để bạn đưa lên GitHub/Notion hoặc gửi nhóm.
+
