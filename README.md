@@ -67,6 +67,3 @@
 📆 *Generated: 31/07/2025*
 
 ---
-
-Nếu bạn muốn, mình có thể tạo luôn bản `.md` hoặc `.pdf` để bạn đưa lên GitHub/Notion hoặc gửi nhóm.
-
