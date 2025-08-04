@@ -1,12 +1,15 @@
 <?php
-$db_server = "localhost";
-$db_username = "root";
-$db_password = "";
-$db_name = "talent_pool";
+session_start();
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "talent_pool";
 
-$conn = new mysqli($db_server, $db_username, $db_password, $db_name);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
-    die("Kết nối cơ sở dữ liệu thất bại: " . $conn->connect_error);
+    die("Kết nối thất bại: " . $conn->connect_error);
 }
-// Không có thẻ đóng ?>
+
+$conn->set_charset("utf8mb4");
+?>
