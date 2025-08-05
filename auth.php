@@ -230,6 +230,9 @@ $conn->close();
         .overlay-right { right: 0; transform: translateX(0); }
         .container.right-panel-active .overlay-right { transform: translateX(20%); }
         .message-box { min-height: 24px; font-size: 14px; font-weight: bold; margin: 5px 0 10px 0; width: 100%; text-align: center; }
+        .back-to-role-selection { position: absolute; top: 20px; left: 20px; font-size: 14px; color: #333; text-decoration: none; z-index: 10; font-weight: bold; }
+        .back-to-role-selection:hover { color: var(--primary-color); }
+        .back-to-role-selection i { margin-right: 5px; }
         .error { color: var(--error-color); }
         .success { color: #1a7431; }
         .password-error-msg { display: none; text-align: left; font-size: 13px; font-weight: normal; margin-top: -5px; color: var(--error-color); }
@@ -262,6 +265,7 @@ $conn->close();
     </div>
     <div class="container" id="main-container">
         <div class="form-container sign-up-container">
+            <a href="#" class="back-to-role-selection"><i class="fas fa-arrow-left"></i> Quay lại</a>
             <form action="auth.php" method="post" id="signUpForm" novalidate>
                 <input type="hidden" name="action" value="signUp">
                 <input type="hidden" name="user_type_choice" id="signup-role">
@@ -302,6 +306,7 @@ $conn->close();
             </form>
         </div>
         <div class="form-container sign-in-container">
+            <a href="#" class="back-to-role-selection"><i class="fas fa-arrow-left"></i> Quay lại</a>
             <form action="auth.php" method="post">
                 <input type="hidden" name="action" value="signIn">
                 <input type="hidden" name="user_type_choice" id="signin-role">
@@ -411,6 +416,21 @@ $conn->close();
                 input.addEventListener('blur', function() { if (!this.value.trim()) this.classList.add('input-error'); });
                 input.addEventListener('input', function() { if (this.value.trim()) this.classList.remove('input-error'); });
             });
+
+            document.querySelectorAll('.back-to-role-selection').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mainContainer.style.display = 'none';
+                    roleSelectionScreen.style.display = 'block';
+                    container.classList.remove("right-panel-active");
+                    
+                    const animatedFields = document.querySelectorAll('.form-field-animated');
+                    animatedFields.forEach(field => {
+                        field.classList.remove('visible');
+                    });
+                });
+            });
+
             <?php
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "roleSelectionScreen.style.display = 'none'; mainContainer.style.display = 'block';\n";
