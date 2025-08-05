@@ -34,37 +34,44 @@ $base_path = '/talent_pool'; // Sửa lại nếu bạn đổi tên thư mục d
 
 <header id="main-header" class="bg-white/80 sticky top-0 z-50 transition-all duration-300">
   <nav aria-label="Global" class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-    <div class="flex lg:flex-1">
+    <!-- Mobile Menu Button (Left) -->
+    <div class="flex lg:hidden">
+      <button type="button" id="mobile-menu-open-button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- Logo (Center on mobile, Left on desktop) -->
+    <div class="flex flex-1 justify-center lg:justify-start">
       <a href="<?= $base_path ?>/index.php" class="-m-1.5 p-1.5 flex items-center gap-x-2">
         <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Talent Pool Logo" class="h-8 w-auto" />
         <span class="font-bold text-xl text-gray-800">Talent Pool</span>
       </a>
     </div>
+    
+    <!-- Desktop Navigation -->
     <div class="hidden lg:flex lg:gap-x-12">
       <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Dành cho Ứng viên</a>
       <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Dành cho Doanh nghiệp</a>
       <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Việc làm</a>
     </div>
-    <div class="flex flex-1 justify-end items-center gap-x-6">
+    
+    <!-- Desktop Auth Buttons (Right) -->
+    <div class="hidden lg:flex items-center gap-x-6">
       <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-        <a href="<?= $_SESSION['role'] === 'user' ? $base_path.'/user/edit_profile.php' : $base_path.'/pages/company_profile.php' ?>" class="hidden lg:block text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Hồ sơ cá nhân</a>
+        <a href="<?= $_SESSION['role'] === 'user' ? $base_path.'/user/edit_profile.php' : $base_path.'/pages/company_profile.php' ?>" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Hồ sơ cá nhân</a>
         <a href="<?= $base_path ?>/logout.php" class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Đăng xuất</a>
       <?php else: ?>
-        <a href="auth.php?action=signin" class="hidden lg:block text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Đăng nhập</a>
+        <a href="auth.php?action=signin" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Đăng nhập</a>
         <a href="auth.php?action=signup" class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Đăng ký</a>
       <?php endif; ?>
-       <div class="flex lg:hidden">
-         <button type="button" id="mobile-menu-open-button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
-           <i class="fas fa-bars text-xl"></i>
-         </button>
-       </div>
     </div>
   </nav>
 
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="lg:hidden fixed inset-0 z-50 hidden">
       <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-25 opacity-0 transition-opacity duration-300"></div>
-      <div id="mobile-menu-content" class="fixed inset-y-0 right-0 w-full max-w-sm bg-white p-6 transform translate-x-full transition-transform duration-300 ease-in-out">
+      <div id="mobile-menu-content" class="fixed inset-y-0 left-0 w-full max-w-sm bg-white p-6 transform -translate-x-full transition-transform duration-300 ease-in-out">
         <div class="flex items-center justify-between">
             <a href="<?= $base_path ?>/index.php" class="flex items-center gap-x-2">
                 <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Talent Pool Logo" class="h-8 w-auto" />
@@ -111,12 +118,12 @@ $base_path = '/talent_pool'; // Sửa lại nếu bạn đổi tên thư mục d
         function openMobileMenu() {
             mobileMenu.classList.remove('hidden');
             setTimeout(() => {
-                mobileMenuContent.classList.remove('translate-x-full');
+                mobileMenuContent.classList.remove('-translate-x-full');
                 mobileMenuOverlay.classList.remove('opacity-0');
             }, 10);
         }
         function closeMobileMenu() {
-            mobileMenuContent.classList.add('translate-x-full');
+            mobileMenuContent.classList.add('-translate-x-full');
             mobileMenuOverlay.classList.add('opacity-0');
             setTimeout(() => {
                 mobileMenu.classList.add('hidden');

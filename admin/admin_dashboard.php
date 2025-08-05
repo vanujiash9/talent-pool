@@ -88,7 +88,7 @@ body {
 }
 .sidebar .logout {
     margin: 38px 0 25px 0;
-    color: #e57373;
+            color: #E30417;
     font-weight: 600;
 }
 .main {

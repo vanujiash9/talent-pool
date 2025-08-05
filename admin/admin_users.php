@@ -23,7 +23,7 @@ LEFT JOIN applicants a ON a.applicant_id=aa.applicant_id ORDER BY account_id DES
         tr:hover { background:#e9f5fe;}
         .status { font-size:12px;padding:2px 8px;border-radius:4px;}
         .active {background:#e8f7ee; color:#219150;}
-        .suspended {background:#fbeaea; color:#d91e23;}
+        .suspended {background:#fbeaea; color:#E30417;}
         .admin {background:#e9f5fe; color:#1976d2;}
         .user {background:#eee; color:#727b87;}
         a {color:#2962ff;text-decoration:none;}

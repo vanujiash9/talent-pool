@@ -188,8 +188,8 @@ if (isset($conn) && $conn) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .gradient-bg { background: linear-gradient(to right, #4a90e2, #50e3c2); }
-        .input-error { border-color: #ef4444; }
-        .error-message { color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; }
+        .input-error { border-color: #E30417; }
+        .error-message { color: #E30417; font-size: 0.875rem; margin-top: 0.25rem; }
     </style>
 </head>
 <body class="bg-gray-100 font-sans antialiased">

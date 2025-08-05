@@ -290,7 +290,7 @@ if (isset($conn) && $conn) {
             right: -4px;
             width: 12px;
             height: 12px;
-            background: #ef4444;
+            background: #E30417;
             border-radius: 50%;
             border: 2px solid white;
             animation: pulse 2s infinite;
