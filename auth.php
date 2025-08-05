@@ -210,6 +210,16 @@ $conn->close();
         .sign-up-container { left: 0; width: 50%; opacity: 0; z-index: 1; overflow-y: auto; padding: 20px 0; scrollbar-width: thin; }
         .container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; animation: show 0.6s; }
         @keyframes show { from { opacity: 0; z-index: 1; } to { opacity: 1; z-index: 5; } }
+        .form-field-animated { opacity: 0; transform: translateY(20px); transition: all 0.4s ease; }
+        .form-field-animated.visible { opacity: 1; transform: translateY(0); }
+        .form-field-animated:nth-child(1) { transition-delay: 0.1s; }
+        .form-field-animated:nth-child(2) { transition-delay: 0.2s; }
+        .form-field-animated:nth-child(3) { transition-delay: 0.3s; }
+        .form-field-animated:nth-child(4) { transition-delay: 0.4s; }
+        .form-field-animated:nth-child(5) { transition-delay: 0.5s; }
+        .form-field-animated:nth-child(6) { transition-delay: 0.6s; }
+        .form-field-animated:nth-child(7) { transition-delay: 0.7s; }
+        .form-field-animated:nth-child(8) { transition-delay: 0.8s; }
         .overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100; }
         .container.right-panel-active .overlay-container{ transform: translateX(-100%); }
         .overlay { background: var(--primary-color); background: -webkit-linear-gradient(to right, var(--gradient-start), var(--primary-color)); background: linear-gradient(to right, var(--gradient-start), var(--primary-color)); background-repeat: no-repeat; background-size: cover; background-position: 0 0; color: #FFFFFF; position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
@@ -225,6 +235,18 @@ $conn->close();
         .password-error-msg { display: none; text-align: left; font-size: 13px; font-weight: normal; margin-top: -5px; color: var(--error-color); }
         .form-fields { width: 100%; }
         .applicant-field, .company-field { display: none; width: 100%; }
+        .applicant-field .form-field-animated, .company-field .form-field-animated { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: all 0.4s ease; 
+        }
+        .applicant-field .form-field-animated.visible, .company-field .form-field-animated.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        .form-container button { transition: all 0.3s ease; }
+        .form-container button.animated { transform: translateY(20px); opacity: 0; }
+        .form-container button.animated.visible { transform: translateY(0); opacity: 1; transition-delay: 0.9s; }
     </style>
 </head>
 <body>
@@ -249,23 +271,23 @@ $conn->close();
                     <?php if ($success) echo "<span class='success'>$success</span>"; ?>
                 </div>
                 <div class="form-fields">
-                    <input type="text" name="name" id="signup-name-placeholder" required class="validate-required" />
-                    <input type="email" name="email" placeholder="Email" required class="validate-required"/>
-                    <div class="input-wrapper">
+                    <input type="text" name="name" id="signup-name-placeholder" required class="validate-required form-field-animated" />
+                    <input type="email" name="email" placeholder="Email" required class="validate-required form-field-animated"/>
+                    <div class="input-wrapper form-field-animated">
                         <input type="password" id="password-signup" name="password" placeholder="Mật khẩu" required class="validate-required"/>
                         <i class="fa fa-eye toggle-password" id="togglePasswordSignUp"></i>
                     </div>
                     <div class="password-error-msg" id="password-error-msg">Mật khẩu phải dài ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.</div>
-                    <input type="tel" name="phone" placeholder="Số điện thoại" required class="validate-required"/>
+                    <input type="tel" name="phone" placeholder="Số điện thoại" required class="validate-required form-field-animated"/>
                     <div class="applicant-field">
-                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" name="dob" placeholder="Ngày sinh" class="validate-required"/>
-                        <select name="university" class="validate-required">
+                        <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" name="dob" placeholder="Ngày sinh" class="validate-required form-field-animated"/>
+                        <select name="university" class="validate-required form-field-animated">
                             <option value="" disabled selected>-- Chọn trường đại học --</option>
                             <?php foreach($universities as $uni): ?>
                                 <option value="<?php echo $uni['university_id']; ?>"><?php echo htmlspecialchars($uni['university_name']); ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <input list="majors-list" name="major" placeholder="Nhập hoặc chọn chuyên ngành" class="validate-required">
+                        <input list="majors-list" name="major" placeholder="Nhập hoặc chọn chuyên ngành" class="validate-required form-field-animated">
                         <datalist id="majors-list">
                              <?php foreach($majors as $major): ?>
                                 <option value="<?php echo htmlspecialchars($major['major_name']); ?>">
@@ -273,10 +295,10 @@ $conn->close();
                         </datalist>
                     </div>
                     <div class="company-field">
-                        <input type="text" name="address" placeholder="Địa chỉ công ty" class="validate-required"/>
+                        <input type="text" name="address" placeholder="Địa chỉ công ty" class="validate-required form-field-animated"/>
                     </div>
                 </div>
-                <button type="submit">Đăng Ký</button>
+                <button type="submit" class="form-field-animated">Đăng Ký</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
@@ -342,8 +364,23 @@ $conn->close();
                     mainContainer.style.display = 'block';
                 });
             });
-            document.getElementById('signUp').addEventListener('click', () => container.classList.add("right-panel-active"));
-            document.getElementById('signIn').addEventListener('click', () => container.classList.remove("right-panel-active"));
+            document.getElementById('signUp').addEventListener('click', () => {
+                container.classList.add("right-panel-active");
+                // Delay để hiện các trường form mượt mà
+                setTimeout(() => {
+                    const animatedFields = document.querySelectorAll('.form-field-animated');
+                    animatedFields.forEach(field => {
+                        field.classList.add('visible');
+                    });
+                }, 300);
+            });
+            document.getElementById('signIn').addEventListener('click', () => {
+                const animatedFields = document.querySelectorAll('.form-field-animated');
+                animatedFields.forEach(field => {
+                    field.classList.remove('visible');
+                });
+                container.classList.remove("right-panel-active");
+            });
             document.querySelectorAll('.toggle-password').forEach(toggle => {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -381,6 +418,10 @@ $conn->close();
                 echo "document.querySelector('.role-btn[data-role=\'$role_from_post\']').click();\n";
                 if (isset($_POST['action']) && $_POST['action'] == 'signUp' && !empty($error)) {
                     echo 'container.classList.add("right-panel-active");';
+                    echo 'setTimeout(() => {';
+                    echo '    const animatedFields = document.querySelectorAll(".form-field-animated");';
+                    echo '    animatedFields.forEach(field => field.classList.add("visible"));';
+                    echo '}, 300);';
                 } elseif (!empty($success)) {
                     echo 'container.classList.remove("right-panel-active");';
                 }
