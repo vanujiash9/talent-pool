@@ -141,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
                         $_SESSION['role'] = 'user';
                         $_SESSION['applicant_id'] = $user['applicant_id'];
                         $_SESSION['username'] = $user['username'];
-                        header("Location: user/user_dashboard.php");
+                        header("Location: index.php");
                         exit();
                     }
                 }
@@ -157,7 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
                         $_SESSION['role'] = 'company';
                         $_SESSION['company_id'] = $company['company_id'];
                         $_SESSION['username'] = $company['username'];
-                        header("Location: company/company_dashboard.php");
+                        header("Location: index.php");
                         exit();
                     }
                 }
@@ -178,39 +178,267 @@ $conn->close();
     <style>
         @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700,800');
         * { box-sizing: border-box; }
-        :root { --primary-color: #3498db; --gradient-start: #2980b9; --error-color: #e74c3c; }
-        body { background: #f6f5f7; display: flex; justify-content: center; align-items: center; flex-direction: column; font-family: 'Montserrat', sans-serif; min-height: 100vh; margin: 20px 0; }
-        #role-selection-screen { text-align: center; }
-        .role-choice-box { background: white; padding: 40px 60px; border-radius: 10px; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); }
-        .role-choice-box h1 { font-weight: 800; margin-bottom: 30px; }
-        .role-buttons { display: flex; gap: 20px; }
-        .role-btn { background-color: var(--primary-color); color: white; border: none; padding: 20px 40px; border-radius: 10px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .role-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .role-btn i { margin-right: 10px; }
+        :root { --primary-color: #E30417; --gradient-start: #E30417; --error-color: #E30417; }
+        body { 
+            background: linear-gradient(135deg, #f6f5f7 0%, #e8e6ea 50%, #f0eff1 100%);
+            background-attachment: fixed;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column; 
+            font-family: 'Montserrat', sans-serif; 
+            min-height: 100vh; 
+            margin: 20px 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(227, 4, 23, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(227, 4, 23, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(227, 4, 23, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        #role-selection-screen { 
+            text-align: center; 
+            position: relative;
+            z-index: 2;
+        }
+        .role-choice-box { 
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 45px 60px; 
+            border-radius: 20px; 
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.15),
+                0 15px 30px rgba(227, 4, 23, 0.1),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            position: relative;
+            overflow: hidden;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .role-choice-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--primary-color) 0%, 
+                rgba(227, 4, 23, 0.8) 50%, 
+                var(--primary-color) 100%);
+        }
+        .role-choice-box h1 { 
+            font-weight: 800; 
+            margin-bottom: 40px; 
+            color: #2c3e50;
+            font-size: 2.2em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .role-buttons { 
+            display: flex; 
+            gap: 16px; 
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .role-btn { 
+            background: linear-gradient(145deg, var(--primary-color) 0%, #c20415 100%);
+            color: white; 
+            border: none; 
+            padding: 20px 35px; 
+            border-radius: 12px; 
+            font-size: 1.1em; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            margin: 8px;
+            box-shadow: 
+                0 8px 25px rgba(227, 4, 23, 0.3),
+                0 4px 10px rgba(0,0,0,0.1);
+        }
+        .role-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .role-btn:hover::before {
+            left: 100%;
+        }
+        .role-btn:hover { 
+            transform: translateY(-8px) scale(1.05); 
+            box-shadow: 
+                0 15px 35px rgba(227, 4, 23, 0.4),
+                0 8px 20px rgba(0,0,0,0.15);
+        }
+        .role-btn i { 
+            margin-right: 12px; 
+            font-size: 1.4em;
+        }
         #main-container { display: none; }
-        h1.form-title { font-weight: 800; font-size: 2em; margin: 0 0 20px 0; }
-        h2.main-title { font-weight: 700; margin-bottom: 20px; font-size: 1.8em; color: #333; }
-        p { font-size: 16px; font-weight: 100; line-height: 24px; letter-spacing: 0.5px; margin: 20px 0 30px; }
-        a { color: #333; font-size: 14px; text-decoration: none; margin: 15px 0; }
-        button { border-radius: 25px; border: 1px solid var(--primary-color); background-color: var(--primary-color); color: #FFFFFF; font-size: 14px; font-weight: bold; padding: 16px 50px; letter-spacing: 1px; text-transform: uppercase; transition: transform 80ms ease-in; cursor: pointer; }
-        button:active { transform: scale(0.95); }
+        h1.form-title { font-weight: 800; font-size: 1.6em; margin: 10px 0 15px 0; }
+        h2.main-title { 
+            font-weight: 700; 
+            margin-bottom: 30px; 
+            font-size: 2.2em; 
+            color: #2c3e50;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2.main-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--primary-color) 50%, 
+                transparent 100%);
+            border-radius: 2px;
+        }
+        p { font-size: 14px; font-weight: 400; line-height: 20px; letter-spacing: 0.3px; margin: 8px 0 15px; }
+        a { color: #333; font-size: 13px; text-decoration: none; margin: 8px 0; }
+        span { display: block; margin: 5px 0 10px 0; color: #666; font-size: 13px; }
+        button { 
+            border-radius: 20px; 
+            border: 2px solid var(--primary-color); 
+            background: linear-gradient(145deg, var(--primary-color) 0%, #c20415 100%);
+            color: #FFFFFF; 
+            font-size: 12px; 
+            font-weight: bold; 
+            padding: 12px 25px; 
+            letter-spacing: 0.8px; 
+            text-transform: uppercase; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin: 10px 0;
+            box-shadow: 
+                0 8px 25px rgba(227, 4, 23, 0.3),
+                0 4px 10px rgba(0,0,0,0.1);
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before {
+            left: 100%;
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(227, 4, 23, 0.4),
+                0 8px 20px rgba(0,0,0,0.15);
+        }
+        button:active { transform: translateY(-1px) scale(0.98); }
         button:focus { outline: none; }
-        button.ghost { background-color: transparent; border-color: #FFFFFF; }
-        form { background-color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 50px; height: 100%; text-align: center; }
-        input, select { background-color: #f0f0f0; border: 1px solid transparent; padding: 15px; margin: 8px 0; width: 100%; border-radius: 8px; font-size: 14px; font-family: 'Montserrat', sans-serif; transition: border-color 0.3s; }
-        input:focus, select:focus { border-color: var(--primary-color); outline: none; }
+        button.ghost { 
+            background: transparent; 
+            border-color: #FFFFFF;
+            box-shadow: 
+                0 4px 15px rgba(255,255,255,0.2),
+                0 2px 5px rgba(0,0,0,0.1);
+        }
+        button.ghost:hover {
+            background: rgba(255,255,255,0.1);
+            box-shadow: 
+                0 8px 25px rgba(255,255,255,0.3),
+                0 4px 10px rgba(0,0,0,0.15);
+        }
+        form { 
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-direction: column; 
+            padding: 20px 30px; 
+            height: 100%; 
+            text-align: center;
+            box-sizing: border-box;
+        }
+        input, select { 
+            background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+            border: 2px solid #e9ecef; 
+            padding: 10px 14px; 
+            margin: 4px 0; 
+            width: 100%; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            font-family: 'Montserrat', sans-serif; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 2px 8px rgba(0,0,0,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            box-sizing: border-box;
+        }
+        input:focus, select:focus { 
+            border-color: var(--primary-color); 
+            outline: none;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 25px rgba(227, 4, 23, 0.15),
+                0 4px 10px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+        }
         .input-error { border-color: var(--error-color) !important; }
         .input-wrapper { position: relative; width: 100%; }
-        .input-wrapper i.toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #777; }
+        .input-wrapper i.toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #777; font-size: 14px; }
         select { appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px; }
-        .container { background-color: #fff; border-radius: 10px; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); position: relative; overflow: hidden; width: 1024px; max-width: 100%; min-height: 720px; }
+        .container { 
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px; 
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.15),
+                0 15px 30px rgba(227, 4, 23, 0.1),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            position: relative; 
+            overflow: hidden; 
+            width: 900px; 
+            max-width: 95%; 
+            height: 580px;
+            margin: 20px auto;
+            border: 2px solid rgba(227, 4, 23, 0.1);
+        }
         .form-container { position: absolute; top: 0; height: 100%; transition: all 0.6s ease-in-out; }
         .sign-in-container { left: 0; width: 50%; z-index: 2; }
         .container.right-panel-active .sign-in-container { transform: translateX(100%); }
-        .sign-up-container { left: 0; width: 50%; opacity: 0; z-index: 1; overflow-y: auto; padding: 20px 0; scrollbar-width: thin; }
+        .sign-up-container { left: 0; width: 50%; opacity: 0; z-index: 1; padding: 10px 0; }
         .container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; animation: show 0.6s; }
         @keyframes show { from { opacity: 0; z-index: 1; } to { opacity: 1; z-index: 5; } }
-        .form-field-animated { opacity: 0; transform: translateY(20px); transition: all 0.4s ease; }
+        .form-field-animated { opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
         .form-field-animated.visible { opacity: 1; transform: translateY(0); }
         .form-field-animated:nth-child(1) { transition-delay: 0.1s; }
         .form-field-animated:nth-child(2) { transition-delay: 0.2s; }
@@ -222,26 +450,83 @@ $conn->close();
         .form-field-animated:nth-child(8) { transition-delay: 0.8s; }
         .overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100; }
         .container.right-panel-active .overlay-container{ transform: translateX(-100%); }
-        .overlay { background: var(--primary-color); background: -webkit-linear-gradient(to right, var(--gradient-start), var(--primary-color)); background: linear-gradient(to right, var(--gradient-start), var(--primary-color)); background-repeat: no-repeat; background-size: cover; background-position: 0 0; color: #FFFFFF; position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
+        .overlay { 
+            background: linear-gradient(135deg, var(--primary-color) 0%, #c20415 50%, #a0031a 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            color: #FFFFFF; 
+            position: relative; 
+            left: -100%; 
+            height: 100%; 
+            width: 200%; 
+            transform: translateX(0); 
+            transition: transform 0.6s ease-in-out;
+        }
+        .overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         .container.right-panel-active .overlay { transform: translateX(50%); }
-        .overlay-panel { position: absolute; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 0 50px; text-align: center; top: 0; height: 100%; width: 50%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
+        .overlay-panel { position: absolute; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px 30px; text-align: center; top: 0; height: 100%; width: 50%; transform: translateX(0); transition: transform 0.6s ease-in-out; box-sizing: border-box; }
         .overlay-left { transform: translateX(-20%); }
         .container.right-panel-active .overlay-left { transform: translateX(0); }
         .overlay-right { right: 0; transform: translateX(0); }
         .container.right-panel-active .overlay-right { transform: translateX(20%); }
-        .message-box { min-height: 24px; font-size: 14px; font-weight: bold; margin: 5px 0 10px 0; width: 100%; text-align: center; }
-        .back-to-role-selection { position: absolute; top: 20px; left: 20px; font-size: 14px; color: #333; text-decoration: none; z-index: 10; font-weight: bold; }
-        .back-to-role-selection:hover { color: var(--primary-color); }
-        .back-to-role-selection i { margin-right: 5px; }
+        .message-box { min-height: 16px; font-size: 12px; font-weight: bold; margin: 0 0 10px 0; width: 100%; text-align: center; }
+        .back-to-role-selection { 
+            position: fixed; 
+            top: 20px; 
+            left: 20px; 
+            font-size: 14px; 
+            color: #666; 
+            text-decoration: none; 
+            z-index: 1000; 
+            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 8px 32px rgba(0,0,0,0.12),
+                0 4px 16px rgba(227, 4, 23, 0.1);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(227, 4, 23, 0.1);
+        }
+        .back-to-role-selection:hover { 
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(227, 4, 23, 0.15);
+            background: rgba(255,255,255,0.95);
+        }
+        .back-to-role-selection i { 
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+        .back-to-role-selection:hover i {
+            transform: translateX(-2px);
+        }
         .error { color: var(--error-color); }
-        .success { color: #1a7431; }
+        .success { color: #2ecc71; }
         .password-error-msg { display: none; text-align: left; font-size: 13px; font-weight: normal; margin-top: -5px; color: var(--error-color); }
-        .form-fields { width: 100%; }
-        .applicant-field, .company-field { display: none; width: 100%; }
+        .form-fields { width: 100%; margin-top: 5px; }
+        .applicant-field, .company-field { display: none; width: 100%; margin: 4px 0; }
         .applicant-field .form-field-animated, .company-field .form-field-animated { 
             opacity: 0; 
-            transform: translateY(20px); 
-            transition: all 0.4s ease; 
+            transform: translateY(10px); 
+            transition: all 0.3s ease; 
         }
         .applicant-field .form-field-animated.visible, .company-field .form-field-animated.visible { 
             opacity: 1; 
@@ -255,17 +540,18 @@ $conn->close();
 <body>
     <h2 class="main-title">Cổng kết nối Doanh nghiệp & Sinh viên</h2>
     <div id="role-selection-screen">
+        <a href="index.php" class="back-to-role-selection"><i class="fas fa-home"></i> Quay về trang chủ</a>
         <div class="role-choice-box">
             <h1>Bạn là ai?</h1>
             <div class="role-buttons">
-                <button class="role-btn" data-role="applicant"><i class="fas fa-user-graduate"></i>Tôi là Ứng viên</button>
-                <button class="role-btn" data-role="company"><i class="fas fa-building"></i>Tôi là Doanh nghiệp</button>
+                <button class="role-btn" data-role="applicant"><i class="fas fa-user-graduate"></i>Ứng viên</button>
+                <button class="role-btn" data-role="company"><i class="fas fa-building"></i>Doanh nghiệp</button>
             </div>
         </div>
     </div>
     <div class="container" id="main-container">
+        <a href="#" class="back-to-role-selection" id="back-from-forms" style="display: none;"><i class="fas fa-arrow-left"></i> Quay lại</a>
         <div class="form-container sign-up-container">
-            <a href="#" class="back-to-role-selection"><i class="fas fa-arrow-left"></i> Quay lại</a>
             <form action="auth.php" method="post" id="signUpForm" novalidate>
                 <input type="hidden" name="action" value="signUp">
                 <input type="hidden" name="user_type_choice" id="signup-role">
@@ -306,7 +592,6 @@ $conn->close();
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <a href="#" class="back-to-role-selection"><i class="fas fa-arrow-left"></i> Quay lại</a>
             <form action="auth.php" method="post">
                 <input type="hidden" name="action" value="signIn">
                 <input type="hidden" name="user_type_choice" id="signin-role">
@@ -345,6 +630,10 @@ $conn->close();
             const roleSelectionScreen = document.getElementById('role-selection-screen');
             const mainContainer = document.getElementById('main-container');
             const container = document.getElementById('main-container');
+            
+            // Đọc action từ URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action'); // 'signin' hoặc 'signup'
             document.querySelectorAll('.role-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const role = this.getAttribute('data-role');
@@ -367,10 +656,30 @@ $conn->close();
                     }
                     roleSelectionScreen.style.display = 'none';
                     mainContainer.style.display = 'block';
+                    
+                    // Ẩn nút "Quay về trang chủ" và hiển thị nút "Quay lại"
+                    document.querySelector('a[href="index.php"].back-to-role-selection').style.display = 'none';
+                    document.getElementById('back-from-forms').style.display = 'block';
+                    
+                    // Chuyển đến form phù hợp dựa trên action
+                    if (action === 'signup') {
+                        container.classList.add("right-panel-active");
+                        setTimeout(() => {
+                            const animatedFields = document.querySelectorAll('.form-field-animated');
+                            animatedFields.forEach(field => {
+                                field.classList.add('visible');
+                            });
+                        }, 300);
+                    } else if (action === 'signin') {
+                        container.classList.remove("right-panel-active");
+                    }
                 });
             });
             document.getElementById('signUp').addEventListener('click', () => {
                 container.classList.add("right-panel-active");
+                // Đảm bảo nút "Quay lại" luôn hiển thị khi trong form
+                document.querySelector('a[href="index.php"].back-to-role-selection').style.display = 'none';
+                document.getElementById('back-from-forms').style.display = 'block';
                 // Delay để hiện các trường form mượt mà
                 setTimeout(() => {
                     const animatedFields = document.querySelectorAll('.form-field-animated');
@@ -385,6 +694,9 @@ $conn->close();
                     field.classList.remove('visible');
                 });
                 container.classList.remove("right-panel-active");
+                // Đảm bảo nút "Quay lại" luôn hiển thị khi trong form
+                document.querySelector('a[href="index.php"].back-to-role-selection').style.display = 'none';
+                document.getElementById('back-from-forms').style.display = 'block';
             });
             document.querySelectorAll('.toggle-password').forEach(toggle => {
                 toggle.addEventListener('click', function(e) {
@@ -419,10 +731,21 @@ $conn->close();
 
             document.querySelectorAll('.back-to-role-selection').forEach(button => {
                 button.addEventListener('click', function(e) {
+                    // Kiểm tra xem đây có phải nút "Quay về trang chủ" không
+                    if (this.href && this.href.includes('index.php')) {
+                        // Nút "Quay về trang chủ" - cho phép redirect bình thường
+                        return;
+                    }
+                    
+                    // Nút "Quay lại" từ form về chọn vai trò
                     e.preventDefault();
                     mainContainer.style.display = 'none';
                     roleSelectionScreen.style.display = 'block';
                     container.classList.remove("right-panel-active");
+                    
+                    // Hiển thị lại nút "Quay về trang chủ" và ẩn nút "Quay lại"
+                    document.querySelector('a[href="index.php"].back-to-role-selection').style.display = 'block';
+                    document.getElementById('back-from-forms').style.display = 'none';
                     
                     const animatedFields = document.querySelectorAll('.form-field-animated');
                     animatedFields.forEach(field => {
@@ -434,16 +757,28 @@ $conn->close();
             <?php
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "roleSelectionScreen.style.display = 'none'; mainContainer.style.display = 'block';\n";
+                echo "document.querySelector('a[href=\"index.php\"].back-to-role-selection').style.display = 'none';\n";
+                echo "document.getElementById('back-from-forms').style.display = 'block';\n";
                 $role_from_post = $_POST['user_type_choice'] ?? 'applicant';
                 echo "document.querySelector('.role-btn[data-role=\'$role_from_post\']').click();\n";
+                
+                // Xử lý hiển thị form dựa trên action trong POST request
                 if (isset($_POST['action']) && $_POST['action'] == 'signUp' && !empty($error)) {
                     echo 'container.classList.add("right-panel-active");';
                     echo 'setTimeout(() => {';
                     echo '    const animatedFields = document.querySelectorAll(".form-field-animated");';
                     echo '    animatedFields.forEach(field => field.classList.add("visible"));';
                     echo '}, 300);';
+                } elseif (isset($_POST['action']) && $_POST['action'] == 'signIn' && !empty($error)) {
+                    echo 'container.classList.remove("right-panel-active");';
                 } elseif (!empty($success)) {
                     echo 'container.classList.remove("right-panel-active");';
+                }
+            } else {
+                // Xử lý khi không phải POST request, dựa trên URL parameter
+                if (isset($_GET['action'])) {
+                    $action = $_GET['action'];
+                    echo "// Action từ URL: $action\n";
                 }
             }
             ?>

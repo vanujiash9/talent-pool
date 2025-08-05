@@ -8,6 +8,17 @@ $base_path = '/talent_pool'; // Sửa lại nếu bạn đổi tên thư mục d
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#E30417',
+          }
+        }
+      }
+    }
+  </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -30,17 +41,17 @@ $base_path = '/talent_pool'; // Sửa lại nếu bạn đổi tên thư mục d
       </a>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-      <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600">Dành cho Ứng viên</a>
-      <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600">Dành cho Doanh nghiệp</a>
-      <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600">Việc làm</a>
+      <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Dành cho Ứng viên</a>
+      <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Dành cho Doanh nghiệp</a>
+      <a href="#" class="text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Việc làm</a>
     </div>
     <div class="flex flex-1 justify-end items-center gap-x-6">
       <?php if (isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true): ?>
-        <a href="<?= $_SESSION['role'] === 'user' ? $base_path.'/user/user_dashboard.php' : $base_path.'/company/company_dashboard.php' ?>" class="hidden lg:block text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600">Bảng điều khiển</a>
-        <a href="<?= $base_path ?>/logout.php" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Đăng xuất</a>
+        <a href="<?= $_SESSION['role'] === 'user' ? $base_path.'/user/edit_profile.php' : $base_path.'/pages/company_profile.php' ?>" class="hidden lg:block text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Hồ sơ cá nhân</a>
+        <a href="<?= $base_path ?>/logout.php" class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Đăng xuất</a>
       <?php else: ?>
-        <a href="<?= $base_path ?>/auth.php" class="hidden lg:block text-sm font-semibold leading-6 text-gray-900 hover:text-indigo-600">Đăng nhập</a>
-        <a href="<?= $base_path ?>/auth.php" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Đăng ký</a>
+        <a href="auth.php?action=signin" class="hidden lg:block text-sm font-semibold leading-6 text-gray-900 hover:text-primary">Đăng nhập</a>
+        <a href="auth.php?action=signup" class="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">Đăng ký</a>
       <?php endif; ?>
        <div class="flex lg:hidden">
          <button type="button" id="mobile-menu-open-button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
@@ -72,10 +83,11 @@ $base_path = '/talent_pool'; // Sửa lại nếu bạn đổi tên thư mục d
                 </div>
                 <div class="py-6">
                     <?php if (isset($_SESSION['is_logged_in'])): ?>
-                        <a href="<?= $_SESSION['role'] === 'user' ? $base_path.'/user/user_dashboard.php' : $base_path.'/company/company_dashboard.php' ?>" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Bảng điều khiển</a>
+                        <a href="<?= $_SESSION['role'] === 'user' ? $base_path.'/user/edit_profile.php' : $base_path.'/pages/company_profile.php' ?>" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Hồ sơ cá nhân</a>
                         <a href="<?= $base_path ?>/logout.php" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-red-600 hover:bg-gray-50">Đăng xuất</a>
                     <?php else: ?>
-                        <a href="<?= $base_path ?>/auth.php" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Đăng nhập / Đăng ký</a>
+                        <a href="auth.php?action=signin" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Đăng nhập</a>
+                        <a href="auth.php?action=signup" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Đăng ký</a>
                     <?php endif; ?>
                 </div>
             </div>

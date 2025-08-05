@@ -35,17 +35,17 @@ $conn->close();
         <div class="container mx-auto px-6 lg:px-8 py-20 lg:py-32">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div class="text-center lg:text-left">
-                    <h1 class="text-4xl md:text-6xl font-black text-gray-900 leading-tight">
-                        Nơi Tài Năng <span class="text-indigo-600">Gặp Gỡ</span> Cơ Hội
+                        <h1 class="text-4xl md:text-6xl font-black text-gray-900 leading-tight">
+                        Nơi Tài Năng <span class="text-primary">Gặp Gỡ</span> Cơ Hội
                     </h1>
                     <p class="mt-6 text-lg text-gray-600 max-w-xl mx-auto lg:mx-0">
                         Khám phá hàng ngàn cơ hội việc làm và thực tập. Xây dựng hồ sơ chuyên nghiệp và để các nhà tuyển dụng hàng đầu tìm thấy bạn.
                     </p>
                     <div class="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                        <a href="auth.php" class="w-full sm:w-auto inline-block text-center bg-indigo-600 text-white font-bold px-8 py-4 rounded-lg text-lg hover:bg-indigo-700 transition-transform transform hover:scale-105">
+                        <a href="auth.php?action=signup" class="w-full sm:w-auto inline-block text-center bg-primary text-white font-bold px-8 py-4 rounded-lg text-lg hover:bg-primary/90 transition-transform transform hover:scale-105">
                             Bắt đầu ngay
                         </a>
-                        <a href="#features" class="w-full sm:w-auto inline-block text-center text-gray-700 font-bold px-8 py-4 rounded-lg text-lg hover:text-indigo-600 transition-all">
+                        <a href="#features" class="w-full sm:w-auto inline-block text-center text-gray-700 font-bold px-8 py-4 rounded-lg text-lg hover:text-primary transition-all">
                             Tìm hiểu thêm <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
@@ -62,15 +62,15 @@ $conn->close();
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                 <div class="p-4">
-                    <h3 class="text-5xl font-extrabold text-indigo-600" data-target="<?= $stats['jobs'] ?>">0</h3>
+                    <h3 class="text-5xl font-extrabold text-primary" data-target="<?= $stats['jobs'] ?>">0</h3>
                     <p class="mt-2 text-lg font-medium text-gray-500">Việc làm đang tuyển</p>
                 </div>
                 <div class="p-4">
-                    <h3 class="text-5xl font-extrabold text-indigo-600" data-target="<?= $stats['companies'] ?>">0</h3>
+                    <h3 class="text-5xl font-extrabold text-primary" data-target="<?= $stats['companies'] ?>">0</h3>
                     <p class="mt-2 text-lg font-medium text-gray-500">Doanh nghiệp tham gia</p>
                 </div>
                 <div class="p-4">
-                    <h3 class="text-5xl font-extrabold text-indigo-600" data-target="<?= $stats['applicants'] ?>">0</h3>
+                    <h3 class="text-5xl font-extrabold text-primary" data-target="<?= $stats['applicants'] ?>">0</h3>
                     <p class="mt-2 text-lg font-medium text-gray-500">Hồ sơ ứng viên</p>
                 </div>
             </div>
@@ -101,21 +101,21 @@ $conn->close();
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="feature-card bg-white p-8 rounded-lg text-center border border-gray-200">
-                    <div class="h-16 w-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-3xl">
+                    <div class="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-3xl">
                         <i class="fas fa-search-plus"></i>
                     </div>
                     <h3 class="mt-6 text-xl font-bold text-gray-800">Tìm kiếm thông minh</h3>
                     <p class="mt-2 text-gray-500">Hệ thống gợi ý và bộ lọc mạnh mẽ giúp bạn tìm thấy cơ hội hoặc ứng viên phù hợp nhất.</p>
                 </div>
                 <div class="feature-card bg-white p-8 rounded-lg text-center border border-gray-200">
-                    <div class="h-16 w-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-3xl">
+                    <div class="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-3xl">
                         <i class="fas fa-user-tie"></i>
                     </div>
                     <h3 class="mt-6 text-xl font-bold text-gray-800">Hồ sơ chuyên nghiệp</h3>
                     <p class="mt-2 text-gray-500">Xây dựng hồ sơ năng lực ấn tượng, thể hiện toàn bộ kỹ năng và kinh nghiệm của bạn.</p>
                 </div>
                 <div class="feature-card bg-white p-8 rounded-lg text-center border border-gray-200">
-                    <div class="h-16 w-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-3xl">
+                    <div class="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-3xl">
                         <i class="fas fa-hands-helping"></i>
                     </div>
                     <h3 class="mt-6 text-xl font-bold text-gray-800">Kết nối trực tiếp</h3>
