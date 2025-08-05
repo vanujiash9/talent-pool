@@ -1,127 +1,156 @@
 <?php
 session_start();
+require_once "../config.php"; // Đi ngược ra 1 cấp để gọi config.php
 
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['role'] != 'company') {
-    header("Location: login.php");
+// 1. BẢO VỆ TRANG: CHỈ DOANH NGHIỆP ĐÃ ĐĂNG NHẬP MỚI ĐƯỢC TRUY CẬP
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true || $_SESSION['role'] !== 'company') {
+    header("location: ../auth.php"); // Chuyển về trang đăng nhập nếu không hợp lệ
     exit;
 }
 
-include "config.php";
-
-$message = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $company_id = $_SESSION['company_id'];
-    $job_name = trim($_POST['job_name']);
-    $job_description = trim($_POST['job_description']);
-    $requirements = trim($_POST['requirements']);
-    $salary = trim($_POST['salary']);
-    $field = trim($_POST['field']);
-    $location = trim($_POST['location']);
-    $position = trim($_POST['position']);
-    $experience = trim($_POST['experience']);
-    $status = 'active'; // Mặc định là active khi đăng
-
-    $sql = "INSERT INTO jobs (company_id, job_name, job_description, requirements, salary, field, location, position, experience, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    
-    if ($stmt) {
-        $stmt->bind_param("isssssssss", $company_id, $job_name, $job_description, $requirements, $salary, $field, $location, $position, $experience, $status);
-        if ($stmt->execute()) {
-            $_SESSION['message'] = "Tin tuyển dụng mới đã được đăng thành công!";
-            header("Location: company_dashboard.php");
-            exit;
-        } else {
-            $message = "Đã có lỗi xảy ra. Vui lòng thử lại.";
-        }
-        $stmt->close();
-    } else {
-        $message = "Lỗi chuẩn bị truy vấn.";
-    }
-    $conn->close();
+// Lấy company_id từ session để biết ai là người đăng tin
+$company_id = $_SESSION['company_id'] ?? null;
+if (!$company_id) {
+    // Xử lý trường hợp không tìm thấy company_id trong session, có thể đăng xuất và báo lỗi
+    session_unset();
+    session_destroy();
+    header("location: ../auth.php?error=session_expired");
+    exit;
 }
 
-?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đăng tin tuyển dụng</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body class="bg-gray-100 antialiased">
-    <div class="w-full text-white bg-blue-800 shadow-md">
-        <div class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
-            <div class="p-4 flex flex-row items-center justify-between">
-                <a href="company_dashboard.php" class="text-lg font-semibold tracking-widest uppercase rounded-lg focus:outline-none focus:shadow-outline">Dashboard Công ty</a>
-            </div>
-            <nav class="flex-col flex-grow pb-4 md:pb-0 hidden md:flex md:justify-end md:flex-row">
-                <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg hover:bg-blue-600 md:mt-0 md:ml-4" href="logout.php">Đăng xuất</a>
-            </nav>
-        </div>
-    </div>
+// Khởi tạo các biến
+$errors = [];
+$message = '';
+$job_name = $job_description = $average_salary = $field = $status = '';
 
-    <div class="container mx-auto my-5 p-5">
-        <div class="md:flex no-wrap md:-mx-2">
-            <div class="w-full md:w-3/4 mx-auto">
-                <div class="bg-white p-3 shadow-md rounded-lg">
-                    <div class="flex justify-between items-center space-x-2 font-semibold text-gray-900 leading-8 mb-4 border-b pb-2">
-                        <span class="text-blue-800 text-xl tracking-wide"><i class="fas fa-plus-circle"></i> Đăng tin tuyển dụng mới</span>
-                    </div>
-                    <?php if (!empty($message)): ?>
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-                            <p><?= htmlspecialchars($message) ?></p>
-                        </div>
-                    <?php endif; ?>
-                    <form action="create_job.php" method="POST" class="mt-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="form-group">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="job_name">Tên công việc</label>
-                                <input type="text" name="job_name" id="job_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="field">Lĩnh vực</label>
-                                <input type="text" name="field" id="field" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="location">Địa điểm</label>
-                                <input type="text" name="location" id="location" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="position">Vị trí</label>
-                                <input type="text" name="position" id="position" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="salary">Mức lương</label>
-                                <input type="text" name="salary" id="salary" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                            <div class="form-group">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="experience">Kinh nghiệm</label>
-                                <input type="text" name="experience" id="experience" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                            </div>
-                        </div>
-                        <div class="form-group mt-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="job_description">Mô tả công việc</label>
-                            <textarea name="job_description" id="job_description" rows="6" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
-                        </div>
-                        <div class="form-group mt-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="requirements">Yêu cầu công việc</label>
-                            <textarea name="requirements" id="requirements" rows="6" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
-                        </div>
-                        <div class="flex items-center justify-between mt-6">
-                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                                Đăng tin
-                            </button>
-                            <a href="company_dashboard.php" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-                                Hủy bỏ
-                            </a>
-                        </div>
-                    </form>
-                </div>
+// 2. XỬ LÝ KHI FORM ĐƯỢC GỬI ĐI
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Lấy và làm sạch dữ liệu
+    $job_name = trim($_POST['job_name']);
+    $job_description = trim($_POST['job_description']);
+    $average_salary = trim($_POST['average_salary']);
+    $field = trim($_POST['field']);
+    $status = trim($_POST['status']);
+
+    // --- Validation ---
+    if (empty($job_name)) { $errors['job_name'] = 'Tên công việc không được để trống.'; }
+    if (empty($job_description)) { $errors['job_description'] = 'Mô tả công việc không được để trống.'; }
+    if (empty($field)) { $errors['field'] = 'Lĩnh vực không được để trống.'; }
+    if (!empty($average_salary) && !is_numeric($average_salary)) { $errors['average_salary'] = 'Mức lương phải là một con số.'; }
+
+    // Nếu không có lỗi, tiến hành lưu vào database
+    if (empty($errors)) {
+        $sql = "INSERT INTO jobs (company_id, job_name, job_description, average_salary, field, status) VALUES (?, ?, ?, ?, ?, ?)";
+        
+        if ($stmt = $conn->prepare($sql)) {
+            $salary_to_db = !empty($average_salary) ? $average_salary : NULL;
+            $stmt->bind_param("isssis", $company_id, $job_name, $job_description, $salary_to_db, $field, $status);
+            
+            if ($stmt->execute()) {
+                // Đặt thông báo thành công vào session và chuyển hướng về trang dashboard
+                $_SESSION['message'] = "Đăng tin tuyển dụng '" . htmlspecialchars($job_name) . "' thành công!";
+                header("Location: company_dashboard.php"); 
+                exit;
+            } else {
+                $message = "Có lỗi xảy ra, vui lòng thử lại: " . $stmt->error;
+            }
+            $stmt->close();
+        } else {
+            $message = "Lỗi khi chuẩn bị câu lệnh SQL: " . $conn->error;
+        }
+    } else {
+        $message = "Vui lòng sửa các lỗi trong form.";
+    }
+}
+
+$conn->close();
+?>
+<?php include '../templates/header.php'; // Gọi file header chung, chú ý đường dẫn ../ ?>
+
+<main class="container mx-auto p-4 sm:p-6 lg:p-8 pt-24 lg:pt-8"> <!-- Thêm padding top để không bị header che -->
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="border-b pb-6 mb-8">
+                <h1 class="text-3xl font-extrabold text-gray-900">Đăng tin tuyển dụng mới</h1>
+                <p class="mt-2 text-gray-600">Điền các thông tin dưới đây để tiếp cận hàng ngàn ứng viên tiềm năng.</p>
             </div>
+            
+            <?php if ($message): ?>
+                <div class="p-4 mb-6 rounded-md bg-red-100 text-red-700">
+                    <p><?= htmlspecialchars($message) ?></p>
+                </div>
+            <?php endif; ?>
+
+            <form action="create_job.php" method="POST" class="space-y-6">
+                
+                <div>
+                    <label for="job_name" class="block text-sm font-medium text-gray-700 mb-1">Tên công việc <span class="text-red-500">*</span></label>
+                    <input type="text" name="job_name" id="job_name" value="<?= htmlspecialchars($job_name) ?>" 
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 <?= isset($errors['job_name']) ? 'border-red-500' : '' ?>" 
+                           required>
+                    <?php if(isset($errors['job_name'])) echo "<p class='text-red-500 text-xs mt-1'>{$errors['job_name']}</p>"; ?>
+                </div>
+
+                <div>
+                    <label for="job_description" class="block text-sm font-medium text-gray-700 mb-1">Mô tả chi tiết công việc <span class="text-red-500">*</span></label>
+                    <textarea name="job_description" id="job_description" rows="10" 
+                              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 <?= isset($errors['job_description']) ? 'border-red-500' : '' ?>" 
+                              required><?= htmlspecialchars($job_description) ?></textarea>
+                    <p class="mt-2 text-xs text-gray-500">Mô tả yêu cầu, quyền lợi, và trách nhiệm của vị trí này. Bạn có thể sử dụng các công cụ định dạng.</p>
+                    <?php if(isset($errors['job_description'])) echo "<p class='text-red-500 text-xs mt-1'>{$errors['job_description']}</p>"; ?>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="average_salary" class="block text-sm font-medium text-gray-700 mb-1">Mức lương (VNĐ/tháng)</label>
+                        <input type="number" name="average_salary" id="average_salary" placeholder="VD: 15000000 (để trống nếu thỏa thuận)" value="<?= htmlspecialchars($average_salary) ?>" 
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 <?= isset($errors['average_salary']) ? 'border-red-500' : '' ?>">
+                        <?php if(isset($errors['average_salary'])) echo "<p class='text-red-500 text-xs mt-1'>{$errors['average_salary']}</p>"; ?>
+                    </div>
+                    <div>
+                        <label for="field" class="block text-sm font-medium text-gray-700 mb-1">Lĩnh vực <span class="text-red-500">*</span></label>
+                        <input type="text" name="field" id="field" placeholder="VD: Công nghệ thông tin, Marketing" value="<?= htmlspecialchars($field) ?>" 
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 <?= isset($errors['field']) ? 'border-red-500' : '' ?>" 
+                               required>
+                        <?php if(isset($errors['field'])) echo "<p class='text-red-500 text-xs mt-1'>{$errors['field']}</p>"; ?>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Trạng thái tin</label>
+                    <select name="status" id="status" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="active" selected>Công khai (Đang tuyển)</option>
+                        <option value="inactive">Tạm ẩn</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end pt-6 border-t mt-8 space-x-4">
+                    <a href="company_dashboard.php" class="py-2 px-6 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Hủy
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <i class="fas fa-paper-plane mr-2"></i>Đăng tin
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</body>
+</main>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script>
+    try {
+         CKEDITOR.replace('job_description', {
+            height: 250,
+            toolbar: [
+                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', '-', 'RemoveFormat' ] },
+                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote' ] },
+                { name: 'links', items: [ 'Link', 'Unlink' ] },
+                { name: 'styles', items: [ 'Format' ] },
+            ]
+        });
+    } catch (e) {
+        console.error("CKEditor failed to initialize:", e);
+    }
+</script>
+</body> 
 </html>
